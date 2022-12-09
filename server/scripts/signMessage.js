@@ -1,7 +1,5 @@
 const secp = require("ethereum-cryptography/secp256k1");
-const { sha256 } = require("ethereum-cryptography/sha256");
-const { toHex, utf8ToBytes } = require("ethereum-cryptography/utils");
-const { keccak256 } = require("ethereum-cryptography/keccak");
+const { toHex } = require("ethereum-cryptography/utils");
 
 const myArgs = process.argv.slice(2);
 
