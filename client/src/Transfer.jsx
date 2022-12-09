@@ -1,12 +1,39 @@
 import { useState } from "react";
 import server from "./server";
+import { toHex } from "ethereum-cryptography/utils";
+import { sha256 } from "ethereum-cryptography/sha256";
+
 
 function Transfer({ address, setBalance }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [dataToSign, setDataToSign] = useState("");
+  const [signature, setSignature] = useState("");
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
+  async function onRecipientChange(evt) {
+    const recipient = evt.target.value;
+    setRecipient(recipient);
+    if (address && sendAmount && recipient) {
+      let dataToSign = address.toString() + recipient.toString() + sendAmount.toString();
+      setDataToSign(toHex(sha256(new TextEncoder("utf-8").encode(dataToSign))));
+    } else {
+      setDataToSign("");
+    }
+  }
+
+  async function onSendAmountChange(evt) {
+    const sendAmount = evt.target.value;
+    setSendAmount(sendAmount);
+    if (address && sendAmount && recipient) {
+      let dataToSign = address.toString() + recipient.toString() + sendAmount.toString();
+      setDataToSign(toHex(sha256(new TextEncoder("utf-8").encode(dataToSign))));
+    } else {
+      setDataToSign("");
+    }
+  }
+  
   async function transfer(evt) {
     evt.preventDefault();
 
@@ -17,6 +44,7 @@ function Transfer({ address, setBalance }) {
         sender: address,
         amount: parseInt(sendAmount),
         recipient,
+        signature
       });
       setBalance(balance);
     } catch (ex) {
@@ -33,7 +61,7 @@ function Transfer({ address, setBalance }) {
         <input
           placeholder="1, 2, 3..."
           value={sendAmount}
-          onChange={setValue(setSendAmount)}
+          onChange={onSendAmountChange}
         ></input>
       </label>
 
@@ -42,7 +70,21 @@ function Transfer({ address, setBalance }) {
         <input
           placeholder="Type an address, for example: 0x2"
           value={recipient}
-          onChange={setValue(setRecipient)}
+          onChange={onRecipientChange}
+        ></input>
+      </label>
+
+      <label>
+        Data to sign
+        <div className="data-to-sign">{dataToSign}</div>
+      </label>
+
+      <label>
+        Signature
+        <input
+          placeholder="Add transfer signature"
+          value={signature}
+          onChange={setValue(setSignature)}
         ></input>
       </label>
 
