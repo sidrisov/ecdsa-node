@@ -26,11 +26,9 @@ The server folder contains a node.js server using [express](https://expressjs.co
 2. Run `npm install` to install all the depedencies 
 3. Run `node index` to start the server 
 
-Server will generate number of wallets keys (default is 3) and assign random balance from 0 to 100
-In real worlds, those private keys would be generated outside of server.
+Server will generate number of wallets (default is 3) and assign random balance from 0 to 100. In real world, those private keys would be generated and kept outside of server, but for the simplicity we will make it this way.
 
-In order to make a transfer you need to sign the data generated in client (based on transfer details),
-use the following command to sign:
+In order to make a transfer you need to sign the data generated in client (based on transfer details), use the following command to sign:
 
 `node scripts/signMessage.js <message> <privateKey>`
 
